@@ -65,7 +65,8 @@ ok "Backup complete"
 # --- 1. Hyprland look & feel ---
 info "Applying Hyprland visual enhancements..."
 cp "$CONFIGS/hypr/looknfeel.conf" "$HOME/.config/hypr/looknfeel.conf"
-ok "looknfeel.conf installed"
+"$SCRIPT_DIR/lib/update-border-gradient.sh"
+ok "looknfeel.conf installed (border gradient matched to theme)"
 
 # --- 2. Hyprlock ---
 info "Applying lock screen enhancements..."
