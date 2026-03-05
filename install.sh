@@ -33,7 +33,7 @@ echo "  This will apply frosted glass visual"
 echo "  enhancements to your Omarchy setup."
 echo ""
 
-read -rp "  Continue? [Y/n] " confirm
+read -rp "  Continue? [Y/n] " confirm < /dev/tty
 [[ "${confirm,,}" == "n" ]] && exit 0
 echo ""
 

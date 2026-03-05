@@ -30,7 +30,7 @@ echo "  This will restore your original configs"
 echo "  from the backup created during install."
 echo ""
 
-read -rp "  Continue? [Y/n] " confirm
+read -rp "  Continue? [Y/n] " confirm < /dev/tty
 [[ "${confirm,,}" == "n" ]] && exit 0
 echo ""
 
