@@ -56,6 +56,7 @@ backup "$HOME/.config/waybar/style.css" "waybar-style.css"
 backup "$HOME/.config/mako/config" "mako-config"
 backup "$HOME/.config/alacritty/alacritty.toml" "alacritty.toml"
 backup "$HOME/.config/walker/config.toml" "walker-config.toml"
+backup "$HOME/.config/fastfetch/config.jsonc" "fastfetch-config.jsonc"
 if [ -d "$HOME/.config/walker/themes" ]; then
     backup "$HOME/.config/walker/themes" "walker-themes"
 fi
@@ -150,7 +151,13 @@ if [ -f "$WALKER_CONF" ]; then
 fi
 ok "Walker glass theme installed"
 
-# --- 7. Hooks ---
+# --- 7. Fastfetch ---
+info "Applying fastfetch config..."
+mkdir -p "$HOME/.config/fastfetch"
+cp "$CONFIGS/fastfetch/config.jsonc" "$HOME/.config/fastfetch/config.jsonc"
+ok "Fastfetch config installed"
+
+# --- 8. Hooks ---
 info "Installing update-safe hooks..."
 mkdir -p "$HOME/.config/omarchy/hooks"
 

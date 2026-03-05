@@ -52,6 +52,7 @@ restore "waybar-style.css" "$HOME/.config/waybar/style.css" "Waybar style"
 restore "mako-config" "$HOME/.config/mako/config" "Mako notifications"
 restore "alacritty.toml" "$HOME/.config/alacritty/alacritty.toml" "Alacritty"
 restore "walker-config.toml" "$HOME/.config/walker/config.toml" "Walker config"
+restore "fastfetch-config.jsonc" "$HOME/.config/fastfetch/config.jsonc" "Fastfetch"
 
 if [ -d "$BACKUP_DIR/walker-themes" ]; then
     rm -rf "$HOME/.config/walker/themes"

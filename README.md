@@ -17,6 +17,7 @@ Theme-agnostic: works with **any** Omarchy theme out of the box.
 | **Notifications** | Semi-transparent background with rounded corners |
 | **Lock screen** | Rounded input field with fade animations |
 | **Terminal** | Subtle transparency with background blur |
+| **Fastfetch** | Streamlined layout with WiFi, public IP, shell info, branch/channel |
 | **Borders** | Animated gradient border (works with gradient-capable themes) |
 | **Workspaces** | Smooth slide transition between workspaces |
 
@@ -78,6 +79,8 @@ Omarchy Glass installs two hooks:
 │   └── config                # border-radius + background alpha (patched)
 ├── alacritty/
 │   └── alacritty.toml        # opacity added (patched)
+├── fastfetch/
+│   └── config.jsonc          # Streamlined system info layout
 ├── walker/
 │   ├── config.toml           # Theme switched to omarchy-glass
 │   └── themes/omarchy-glass/ # Glass theme files
