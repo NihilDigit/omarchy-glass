@@ -4,8 +4,7 @@ Frosted glass visual enhancements for [Omarchy](https://omarchy.org/) — a mode
 
 Theme-agnostic: works with **any** Omarchy theme out of the box.
 
-<!-- TODO: replace with actual screenshot -->
-<!-- ![preview](screenshots/preview.png) -->
+https://github.com/user-attachments/assets/c4a1c9ce-bcb9-441c-b05f-24bdb3daca88
 
 ## What it does
 
@@ -17,7 +16,7 @@ Theme-agnostic: works with **any** Omarchy theme out of the box.
 | **Notifications** | Semi-transparent background with rounded corners |
 | **Lock screen** | Rounded input field with fade animations |
 | **Terminal** | Subtle transparency with background blur |
-| **Fastfetch** | Streamlined layout with WiFi, public IP, shell info, branch/channel |
+| **Fastfetch** | Arch logo, streamlined layout with dynamic hardware detection, Omarchy version info |
 | **Borders** | Animated gradient border (works with gradient-capable themes) |
 | **Workspaces** | Smooth slide transition between workspaces |
 
@@ -38,32 +37,33 @@ cd omarchy-glass
 ```
 
 The installer will:
-1. Back up your existing configs to `~/.config/omarchy/glass-backup/`
-2. Apply visual enhancements (patching, not replacing, where possible)
+1. Compare your configs against Omarchy defaults — only backs up files you've customized
+2. Apply visual enhancements (replaces looknfeel/hyprlock/fastfetch; patches waybar/mako/alacritty/walker in-place)
 3. Install hooks to survive `omarchy-update` and theme changes
 4. Restart affected services
 
 ## Uninstall
 
+One-liner:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/nihildigit/omarchy-glass/main/remote-uninstall.sh)
+```
+
+Or locally:
+
 ```bash
 ~/.local/share/omarchy-glass/uninstall.sh
 ```
 
-Or if you cloned manually:
-
-```bash
-cd omarchy-glass
-./uninstall.sh
-```
-
-Restores all original configs from the backup created during install.
+Customized configs are restored from backup; unmodified configs are refreshed to Omarchy defaults via `omarchy-refresh-config`.
 
 ## Update-safe
 
 Omarchy Glass installs two hooks:
 
-- **`post-update`** — Automatically restores visual tweaks if `omarchy-update` overwrites them
-- **`theme-set`** — Re-applies notification transparency after switching themes
+- **`post-update`** — Restores visual tweaks if `omarchy-update` overwrites them
+- **`theme-set`** — Updates border gradient to match new theme colors, re-applies notification transparency
 
 ## What gets modified
 
@@ -93,7 +93,7 @@ Omarchy Glass installs two hooks:
 ## Requirements
 
 - [Omarchy](https://omarchy.org/) 3.x+
-- Hyprland 0.44+
+- Hyprland 0.53+ (uses `match:namespace` layerrule syntax)
 
 ## License
 
