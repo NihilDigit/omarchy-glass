@@ -1,0 +1,7 @@
+/* Omarchy Glass - Floating frosted glass waybar */
+window#waybar {
+  background-color: alpha(@background, 0.75);
+  border-radius: 17px;
+  border: 1px solid alpha(@foreground, 0.08);
+}
+

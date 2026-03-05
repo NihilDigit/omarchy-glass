@@ -1,0 +1,22 @@
+#!/bin/bash
+# Omarchy Glass - theme-set hook
+# Re-applies mako transparency and border-radius after theme change,
+# since omarchy-theme-set regenerates the mako config with opaque colors.
+
+THEME_NAME="${1:-}"
+
+MAKO_CONF="$HOME/.config/mako/config"
+
+if [ -f "$MAKO_CONF" ]; then
+    # Ensure border-radius
+    if ! grep -q 'border-radius' "$MAKO_CONF"; then
+        echo "border-radius=12" >> "$MAKO_CONF"
+    fi
+
+    # Make background semi-transparent
+    if grep -q '^background-color=#[0-9a-fA-F]\{6\}$' "$MAKO_CONF"; then
+        sed -i 's/^background-color=#\([0-9a-fA-F]\{6\}\)$/background-color=#\1BF/' "$MAKO_CONF"
+    fi
+
+    makoctl reload 2>/dev/null || true
+fi

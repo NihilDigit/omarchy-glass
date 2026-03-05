@@ -1,0 +1,91 @@
+@import "../../../omarchy/current/theme/walker.css";
+
+* {
+  all: unset;
+}
+
+* {
+  font-family: monospace;
+  font-size: 18px;
+  color: @text;
+}
+
+scrollbar {
+  opacity: 0;
+}
+
+.normal-icons {
+  -gtk-icon-size: 16px;
+}
+
+.large-icons {
+  -gtk-icon-size: 32px;
+}
+
+.box-wrapper {
+  background: alpha(@base, 0.75);
+  padding: 20px;
+  border: 1px solid alpha(@border, 0.15);
+  border-radius: 16px;
+}
+
+.search-container {
+  background: alpha(@base, 0.5);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.input placeholder {
+  opacity: 0.5;
+}
+
+.input:focus,
+.input:active {
+  box-shadow: none;
+  outline: none;
+}
+
+child:hover .item-box {
+  background: alpha(@border, 0.08);
+  border-radius: 8px;
+}
+
+child:selected .item-box {
+  background: alpha(@border, 0.12);
+  border-radius: 8px;
+}
+
+child:selected .item-box * {
+  color: @selected-text;
+}
+
+.item-box {
+  padding-left: 14px;
+}
+
+.item-text-box {
+  all: unset;
+  padding: 14px 0;
+}
+
+.item-subtext {
+  font-size: 0px;
+  min-height: 0px;
+  margin: 0px;
+  padding: 0px;
+}
+
+.item-image {
+  margin-right: 14px;
+  -gtk-icon-transform: scale(0.9);
+}
+
+.current {
+  font-style: italic;
+}
+
+.keybind-hints {
+  background: @background;
+  padding: 10px;
+  margin-top: 10px;
+}
