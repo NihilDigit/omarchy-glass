@@ -4,11 +4,34 @@
 # after theme change, since omarchy-theme-set regenerates configs.
 
 THEME_NAME="${1:-}"
-GLASS_DIR="$HOME/.local/share/omarchy-glass"
+GLASS_DIR="@@GLASS_DIR@@"
+if [ "$GLASS_DIR" = "@@GLASS_DIR@@" ] || [ ! -d "$GLASS_DIR" ]; then
+    GLASS_DIR="$HOME/.local/share/omarchy-glass"
+fi
+
+update_border_gradient_fallback() {
+    local colors_file="$HOME/.config/omarchy/current/theme/colors.toml"
+    local looknfeel="$HOME/.config/hypr/looknfeel.conf"
+    local c4
+    local c5
+
+    [ -f "$colors_file" ] || return 0
+    [ -f "$looknfeel" ] || return 0
+
+    c4=$(grep '^color4' "$colors_file" | cut -d'"' -f2 | tr -d '#')
+    c5=$(grep '^color5' "$colors_file" | cut -d'"' -f2 | tr -d '#')
+
+    [ -n "$c4" ] || return 0
+    [ -n "$c5" ] || return 0
+
+    sed -i "s/col.active_border = .*/col.active_border = rgba(${c4}ee) rgba(${c5}ee) 45deg/" "$looknfeel"
+}
 
 # Update border gradient to match new theme
 if [ -x "$GLASS_DIR/lib/update-border-gradient.sh" ]; then
     "$GLASS_DIR/lib/update-border-gradient.sh"
+else
+    update_border_gradient_fallback
 fi
 
 MAKO_CONF="$HOME/.config/mako/config"

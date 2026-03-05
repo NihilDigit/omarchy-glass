@@ -5,11 +5,13 @@ set -euo pipefail
 # Usage: bash <(curl -fsSL https://raw.githubusercontent.com/nihildigit/omarchy-glass/main/remote-uninstall.sh)
 
 INSTALL_DIR="$HOME/.local/share/omarchy-glass"
+UNINSTALLER="$INSTALL_DIR/uninstall.sh"
 
-if [ ! -d "$INSTALL_DIR" ]; then
+if [ ! -x "$UNINSTALLER" ]; then
     echo "[glass] Omarchy Glass not found at $INSTALL_DIR"
-    echo "[glass] Downloading for uninstall..."
-    git clone --depth 1 "https://github.com/nihildigit/omarchy-glass.git" "$INSTALL_DIR"
+    echo "[glass] Nothing to uninstall."
+    echo "[glass] If you installed from a manual clone, run ./uninstall.sh in that clone."
+    exit 0
 fi
 
-exec "$INSTALL_DIR/uninstall.sh"
+exec "$UNINSTALLER"

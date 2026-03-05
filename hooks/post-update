@@ -2,28 +2,41 @@
 # Omarchy Glass - post-update hook
 # Re-applies visual customizations if overwritten by omarchy-update
 
-GLASS_DIR="$(dirname "$(readlink -f "$0")")/.."
-BACKUP="$HOME/.config/omarchy/glass-backup"
+GLASS_DIR="@@GLASS_DIR@@"
+if [ "$GLASS_DIR" = "@@GLASS_DIR@@" ] || [ ! -d "$GLASS_DIR" ]; then
+    GLASS_DIR="$HOME/.local/share/omarchy-glass"
+fi
+
 RESTORED=()
 
-# Use backup as reference for what configs should look like
+# Restore target from source when changed or missing.
 restore_if_changed() {
     local source="$1"
     local target="$2"
     local label="$3"
 
     [ -f "$source" ] || return 0
-    [ -f "$target" ] || return 0
+    mkdir -p "$(dirname "$target")"
 
-    if ! diff -q "$source" "$target" > /dev/null 2>&1; then
-        cp "$target" "$target.pre-glass.$(date +%s)"
+    if [ ! -f "$target" ] || ! diff -q "$source" "$target" > /dev/null 2>&1; then
+        if [ -f "$target" ]; then
+            cp "$target" "$target.pre-glass.$(date +%s)"
+        fi
         cp "$source" "$target"
         RESTORED+=("$label")
     fi
 }
 
 # Check key config files
-restore_if_changed "$HOME/.config/hypr/looknfeel.conf" "$HOME/.config/hypr/looknfeel.conf" "" 2>/dev/null || true
+restore_if_changed \
+    "$GLASS_DIR/configs/hypr/looknfeel.conf" \
+    "$HOME/.config/hypr/looknfeel.conf" \
+    "Hyprland"
+
+# Keep border gradient synced with current theme when possible.
+if [ -x "$GLASS_DIR/lib/update-border-gradient.sh" ]; then
+    "$GLASS_DIR/lib/update-border-gradient.sh"
+fi
 
 # For mako, just ensure our tweaks survive
 MAKO_CONF="$HOME/.config/mako/config"
@@ -53,8 +66,9 @@ fi
 if [ ${#RESTORED[@]} -gt 0 ]; then
     list=$(printf ', %s' "${RESTORED[@]}")
     list=${list:2}
+    hyprctl reload 2>/dev/null || true
     omarchy-restart-waybar 2>/dev/null || true
     omarchy-restart-walker 2>/dev/null || true
     makoctl reload 2>/dev/null || true
-    notify-send "Omarchy Glass" "Restored visual tweaks after update: ${list}"
+    notify-send "Omarchy Glass" "Restored visual tweaks after update: ${list}" 2>/dev/null || true
 fi

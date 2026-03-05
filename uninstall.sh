@@ -7,11 +7,13 @@ set -euo pipefail
 BACKUP_DIR="$HOME/.config/omarchy/glass-backup"
 
 GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
 info()  { echo -e "${BLUE}[glass]${NC} $1"; }
 ok()    { echo -e "${GREEN}[glass]${NC} $1"; }
+warn()  { echo -e "${YELLOW}[glass]${NC} $1"; }
 
 echo ""
 echo "  ╔══════════════════════════════════╗"
@@ -27,6 +29,26 @@ read -rp "  Continue? [Y/n] " confirm < /dev/tty
 echo ""
 
 # Restore from backup if available, otherwise refresh to Omarchy default
+refresh_to_default() {
+    local config="$1"
+    local target="$HOME/.config/$config"
+    local default="$HOME/.local/share/omarchy/config/$config"
+
+    if command -v omarchy-refresh-config > /dev/null 2>&1; then
+        if omarchy-refresh-config "$config" > /dev/null 2>&1; then
+            return 0
+        fi
+    fi
+
+    if [ -f "$default" ]; then
+        mkdir -p "$(dirname "$target")"
+        cp "$default" "$target"
+        return 0
+    fi
+
+    return 1
+}
+
 restore_or_refresh() {
     local config="$1"   # path relative to ~/.config/
     local label="$2"
@@ -37,8 +59,11 @@ restore_or_refresh() {
         cp "$backup" "$HOME/.config/$config"
         ok "Restored $label (from backup)"
     else
-        omarchy-refresh-config "$config" > /dev/null 2>&1
-        ok "Restored $label"
+        if refresh_to_default "$config"; then
+            ok "Restored $label"
+        else
+            warn "Skipped $label (no backup and no Omarchy default found)"
+        fi
     fi
 }
 

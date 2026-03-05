@@ -104,8 +104,8 @@ if [ -f "$WAYBAR_CSS" ]; then
     # Remove any existing window#waybar block (in case of re-install)
     tmp=$(mktemp)
     awk '
-        /^window#waybar \{/ { skip=1; next }
-        skip && /^\}/ { skip=0; next }
+        /^[[:space:]]*window#waybar[[:space:]]*\{/ { skip=1; next }
+        skip && /^[[:space:]]*\}/ { skip=0; next }
         skip { next }
         { print }
     ' "$WAYBAR_CSS" > "$tmp"
@@ -168,11 +168,13 @@ ok "Fastfetch config installed"
 # --- 8. Hooks ---
 info "Installing update-safe hooks..."
 mkdir -p "$HOME/.config/omarchy/hooks"
+escaped_script_dir=$(printf '%s\n' "$SCRIPT_DIR" | sed 's/[&|]/\\&/g')
 
 for hook in post-update theme-set; do
     if [ -f "$HOOKS/$hook" ]; then
-        cp "$HOOKS/$hook" "$HOME/.config/omarchy/hooks/$hook"
-        chmod +x "$HOME/.config/omarchy/hooks/$hook"
+        hook_dst="$HOME/.config/omarchy/hooks/$hook"
+        sed "s|@@GLASS_DIR@@|$escaped_script_dir|g" "$HOOKS/$hook" > "$hook_dst"
+        chmod +x "$hook_dst"
     fi
 done
 ok "Hooks installed"
