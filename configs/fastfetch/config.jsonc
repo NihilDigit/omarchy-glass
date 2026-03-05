@@ -45,20 +45,8 @@
     },
     {
       "type": "memory",
-      "key": "│ ├󰍛",
+      "key": "└ └󰍛",
       "keyColor": "green"
-    },
-    {
-      "type": "command",
-      "key": "│ ├󰖩",
-      "keyColor": "green",
-      "text": "ssid=$(iw dev wlan0 info 2>/dev/null | awk '/ssid/{print $2}'); echo \"${ssid:-Ethernet}\""
-    },
-    {
-      "type": "command",
-      "key": "└ └󰩟",
-      "keyColor": "green",
-      "text": "curl -s --max-time 2 ipinfo.io | python3 -c \"import sys,json;d=json.load(sys.stdin);ip=d.get('ip','');p=ip.split('.');print(p[0]+'.'+p[1]+'.x.x ('+d.get('country','')+', '+d.get('region','')+')') if len(p)==4 else print('N/A')\" 2>/dev/null || echo 'N/A'"
     },
     {
       "type": "custom",
