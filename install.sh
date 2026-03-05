@@ -37,30 +37,37 @@ read -rp "  Continue? [Y/n] " confirm < /dev/tty
 [[ "${confirm,,}" == "n" ]] && exit 0
 echo ""
 
-# --- Backup existing configs ---
-info "Backing up existing configs to $BACKUP_DIR"
-mkdir -p "$BACKUP_DIR"
+# --- Backup customized configs ---
+# Only backs up files that differ from Omarchy defaults.
+# Skips files the user hasn't touched. Won't overwrite existing backups on re-install.
+info "Checking for customized configs..."
 
-backup() {
-    local src="$1"
-    local name="$2"
-    if [ -e "$src" ]; then
-        cp -r "$src" "$BACKUP_DIR/$name"
+smart_backup() {
+    local config="$1"  # path relative to ~/.config/
+    local user="$HOME/.config/$config"
+    local default="$HOME/.local/share/omarchy/config/$config"
+    local backup="$BACKUP_DIR/$config"
+
+    # Don't overwrite existing backup (preserves original on re-install)
+    [ -f "$backup" ] && return 0
+
+    if [ -f "$user" ] && [ -f "$default" ]; then
+        if ! diff -q "$user" "$default" > /dev/null 2>&1; then
+            mkdir -p "$(dirname "$backup")"
+            cp "$user" "$backup"
+            ok "Backed up customized $config"
+        fi
     fi
 }
 
-backup "$HOME/.config/hypr/looknfeel.conf" "looknfeel.conf"
-backup "$HOME/.config/hypr/hyprlock.conf" "hyprlock.conf"
-backup "$HOME/.config/waybar/config.jsonc" "waybar-config.jsonc"
-backup "$HOME/.config/waybar/style.css" "waybar-style.css"
-backup "$HOME/.config/mako/config" "mako-config"
-backup "$HOME/.config/alacritty/alacritty.toml" "alacritty.toml"
-backup "$HOME/.config/walker/config.toml" "walker-config.toml"
-backup "$HOME/.config/fastfetch/config.jsonc" "fastfetch-config.jsonc"
-if [ -d "$HOME/.config/walker/themes" ]; then
-    backup "$HOME/.config/walker/themes" "walker-themes"
-fi
-ok "Backup complete"
+smart_backup "hypr/looknfeel.conf"
+smart_backup "hypr/hyprlock.conf"
+smart_backup "waybar/config.jsonc"
+smart_backup "waybar/style.css"
+smart_backup "mako/config"
+smart_backup "alacritty/alacritty.toml"
+smart_backup "walker/config.toml"
+smart_backup "fastfetch/config.jsonc"
 
 # --- 1. Hyprland look & feel ---
 info "Applying Hyprland visual enhancements..."
@@ -182,9 +189,11 @@ echo "  ╔═══════════════════════
 echo "  ║      Installation complete!      ║"
 echo "  ╚══════════════════════════════════╝"
 echo ""
-echo "  Backups saved to:"
-echo "    $BACKUP_DIR"
-echo ""
+if [ -n "$(find "$BACKUP_DIR" -type f 2>/dev/null)" ]; then
+    echo "  Custom configs backed up to:"
+    echo "    $BACKUP_DIR"
+    echo ""
+fi
 echo "  To uninstall:"
 echo "    ./uninstall.sh"
 echo ""
