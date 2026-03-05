@@ -22,6 +22,14 @@ Theme-agnostic: works with **any** Omarchy theme out of the box.
 
 ## Install
 
+One-liner:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/nihildigit/omarchy-glass/main/remote-install.sh)
+```
+
+Or manually:
+
 ```bash
 git clone https://github.com/nihildigit/omarchy-glass.git
 cd omarchy-glass
@@ -35,6 +43,12 @@ The installer will:
 4. Restart affected services
 
 ## Uninstall
+
+```bash
+~/.local/share/omarchy-glass/uninstall.sh
+```
+
+Or if you cloned manually:
 
 ```bash
 cd omarchy-glass
