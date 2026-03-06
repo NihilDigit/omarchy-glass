@@ -72,21 +72,32 @@ Removes walker theme dir and hooks. No per-line reversal needed.
 
 ## Animation System
 
-All Hyprland animations live in `looknfeel.conf`:
+Two custom bezier curves in `looknfeel.conf`:
+- **fluent** `(0.1, 0.9, 0.2, 1.0)` — smooth deceleration, used for large motions (workspace switch)
+- **bounce** `(0.34, 1.4, 0.64, 1.0)` — spring overshoot, used for small element entry animations
 
-- Window enter/exit: slide with easeOutQuint
-- Layer enter: slide with easeOutQuint (notifications slide in, OSD pops)
-- Layer exit: fade with easeOutQuint
-- Workspace switch: slide with custom fluent bezier
+Design rule: **bounce for entry, smooth for exit, fluent for large motions**.
+Large-area animations (workspace switch) must NOT use bounce — causes motion sickness.
+
+Hyprland animations in `looknfeel.conf`:
+- Window enter: slide + bounce
+- Window exit: slide + easeOutQuint
+- Layer enter: slide + bounce (notifications slide in, OSD pops)
+- Layer exit: fade + easeOutQuint
+- Workspace switch: slide + fluent (no bounce)
 - Border gradient: infinite linear loop
 
 Per-layer overrides via `layerrule = animation <style>, match:namespace <name>`:
 - mako → `slide` (notifications slide from edge)
 - swayosd → `popin` (volume/brightness bubble pop)
+- walker → no override (常驻进程, layer 不重建, layerrule 动画不触发)
 
-CSS transitions (GTK):
-- Waybar workspace buttons: 300ms ease (background, border, text-shadow)
-- Walker items: 200ms ease (background on hover/select)
+Hyprlock (`hyprlock.conf`): fadeIn + inputFieldIn use bounce; exits use quick.
+
+CSS transitions (GTK) — same bounce cubic-bezier `(0.34, 1.4, 0.64, 1)`:
+- Waybar workspace buttons: 200ms (background, border, text-shadow, opacity)
+- Waybar empty workspaces: opacity 0.35 with transition
+- Walker items: 200ms (background on hover/select)
 
 ## Conventions
 
