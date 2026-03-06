@@ -13,16 +13,21 @@ tooltip {
 }
 
 #workspaces button {
-  transition: background-color 300ms ease,
-              border 300ms ease,
-              text-shadow 300ms ease,
-              padding 200ms ease,
-              margin 200ms ease;
+  transition: background-color 200ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              border 200ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              text-shadow 200ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              opacity 200ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              padding 150ms cubic-bezier(0.34, 1.4, 0.64, 1),
+              margin 150ms cubic-bezier(0.34, 1.4, 0.64, 1);
   background-color: transparent;
   border: 1px solid transparent;
   border-radius: 10px;
   padding: 2px 4px;
   margin: 4px 1.5px;
+}
+
+#workspaces button.empty {
+  opacity: 0.35;
 }
 
 #workspaces button.active {

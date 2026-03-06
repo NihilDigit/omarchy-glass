@@ -110,7 +110,7 @@ if [ -f "$WAYBAR_CSS" ]; then
     # Remove any existing glass blocks (in case of re-install)
     tmp=$(mktemp)
     awk '
-        /^[[:space:]]*(window#waybar|tooltip|#workspaces button(\.active)?)[[:space:]]*\{/ { skip=1; next }
+        /^[[:space:]]*(window#waybar|tooltip|#workspaces button(\.active|\.empty)?)/ { skip=1; next }
         skip && /^[[:space:]]*\}/ { skip=0; next }
         skip { next }
         /Omarchy Glass/ { next }
