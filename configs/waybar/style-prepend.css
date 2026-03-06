@@ -5,3 +5,19 @@ window#waybar {
   border: 1px solid alpha(@foreground, 0.08);
 }
 
+tooltip {
+  background-color: alpha(@background, 0.75);
+  border-radius: 12px;
+  border: 1px solid alpha(@foreground, 0.08);
+  padding: 2px;
+}
+
+#workspaces button.active {
+  background-color: alpha(@foreground, 0.10);
+  border-radius: 10px;
+  border: 1px solid alpha(@foreground, 0.08);
+  padding: 2px 8px;
+  margin: 4px 1.5px;
+  text-shadow: 0 0 6px alpha(@foreground, 0.4);
+}
+

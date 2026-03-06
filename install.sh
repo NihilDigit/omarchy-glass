@@ -68,6 +68,8 @@ smart_backup "mako/config"
 smart_backup "alacritty/alacritty.toml"
 smart_backup "walker/config.toml"
 smart_backup "fastfetch/config.jsonc"
+smart_backup "swayosd/style.css"
+smart_backup "btop/btop.conf"
 
 # --- 1. Hyprland look & feel ---
 info "Applying Hyprland visual enhancements..."
@@ -95,18 +97,23 @@ if [ -f "$WAYBAR_CONF" ]; then
     if ! grep -q '"margin-top"' "$tmp"; then
         sed -i '/"height": 32/a\  "margin-top": 6,\n  "margin-left": 12,\n  "margin-right": 12,' "$tmp"
     fi
+    # Replace active workspace icon with small dot
+    sed -i 's/"active": "󱓻"/"active": "●"/' "$tmp"
+    # Clock: add seconds, reorder to "weekday · HH:MM:SS"
+    sed -i 's/"format": "{:L%A %H:%M}"/"format": "{:L%A · %H:%M:%S}",\n    "interval": 1/' "$tmp"
     mv "$tmp" "$WAYBAR_CONF"
 fi
 
 # Prepend glass style to waybar CSS
 WAYBAR_CSS="$HOME/.config/waybar/style.css"
 if [ -f "$WAYBAR_CSS" ]; then
-    # Remove any existing window#waybar block (in case of re-install)
+    # Remove any existing glass blocks (in case of re-install)
     tmp=$(mktemp)
     awk '
-        /^[[:space:]]*window#waybar[[:space:]]*\{/ { skip=1; next }
+        /^[[:space:]]*(window#waybar|tooltip|#workspaces button\.active)[[:space:]]*\{/ { skip=1; next }
         skip && /^[[:space:]]*\}/ { skip=0; next }
         skip { next }
+        /Omarchy Glass/ { next }
         { print }
     ' "$WAYBAR_CSS" > "$tmp"
 
@@ -159,13 +166,33 @@ if [ -f "$WALKER_CONF" ]; then
 fi
 ok "Walker glass theme installed"
 
-# --- 7. Fastfetch ---
+# --- 7. SwayOSD glass ---
+info "Applying SwayOSD glass styling..."
+SWAYOSD_CSS="$HOME/.config/swayosd/style.css"
+if [ -f "$SWAYOSD_CSS" ]; then
+    # Round the progressbar first (before the global replacement)
+    sed -i '/progressbar {/{n;s/border-radius: 0;/border-radius: 6px;/}' "$SWAYOSD_CSS"
+    # Then round window and remaining elements
+    sed -i 's/border-radius: 0;/border-radius: 12px;/' "$SWAYOSD_CSS"
+    sed -i 's/opacity: 0.97;/opacity: 0.85;/' "$SWAYOSD_CSS"
+fi
+ok "SwayOSD glass applied"
+
+# --- 8. btop transparency ---
+info "Applying btop transparency..."
+BTOP_CONF="$HOME/.config/btop/btop.conf"
+if [ -f "$BTOP_CONF" ]; then
+    sed -i 's/^theme_background = True/theme_background = False/' "$BTOP_CONF"
+fi
+ok "btop transparency applied"
+
+# --- 9. Fastfetch ---
 info "Applying fastfetch config..."
 mkdir -p "$HOME/.config/fastfetch"
 cp "$CONFIGS/fastfetch/config.jsonc" "$HOME/.config/fastfetch/config.jsonc"
 ok "Fastfetch config installed"
 
-# --- 8. Hooks ---
+# --- 10. Hooks ---
 info "Installing update-safe hooks..."
 mkdir -p "$HOME/.config/omarchy/hooks"
 escaped_script_dir=$(printf '%s\n' "$SCRIPT_DIR" | sed 's/[&|]/\\&/g')

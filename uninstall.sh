@@ -76,6 +76,8 @@ restore_or_refresh "mako/config" "Mako notifications"
 restore_or_refresh "alacritty/alacritty.toml" "Alacritty"
 restore_or_refresh "walker/config.toml" "Walker config"
 restore_or_refresh "fastfetch/config.jsonc" "Fastfetch"
+restore_or_refresh "swayosd/style.css" "SwayOSD"
+restore_or_refresh "btop/btop.conf" "btop"
 
 # Remove glass walker theme
 rm -rf "$HOME/.config/walker/themes/omarchy-glass"

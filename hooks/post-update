@@ -55,11 +55,51 @@ if [ -f "$MAKO_CONF" ]; then
     fi
 fi
 
+# Ensure waybar active workspace icon + clock format
+WAYBAR_CONF="$HOME/.config/waybar/config.jsonc"
+if [ -f "$WAYBAR_CONF" ]; then
+    changed=false
+    if grep -q '"active": "󱓻"' "$WAYBAR_CONF"; then
+        sed -i 's/"active": "󱓻"/"active": "●"/' "$WAYBAR_CONF"
+        changed=true
+    fi
+    if grep -q '"format": "{:L%A %H:%M}"' "$WAYBAR_CONF"; then
+        sed -i 's/"format": "{:L%A %H:%M}"/"format": "{:L%A · %H:%M:%S}",\n    "interval": 1/' "$WAYBAR_CONF"
+        changed=true
+    fi
+    $changed && RESTORED+=("Waybar config")
+fi
+
 # Ensure alacritty opacity
 ALACRITTY_CONF="$HOME/.config/alacritty/alacritty.toml"
 if [ -f "$ALACRITTY_CONF" ] && ! grep -q 'opacity' "$ALACRITTY_CONF"; then
     sed -i '/^decorations/a opacity = 0.92' "$ALACRITTY_CONF"
     RESTORED+=("Alacritty")
+fi
+
+# Ensure SwayOSD glass
+SWAYOSD_CSS="$HOME/.config/swayosd/style.css"
+if [ -f "$SWAYOSD_CSS" ]; then
+    changed=false
+    if grep -q 'border-radius: 0;' "$SWAYOSD_CSS"; then
+        sed -i '/progressbar {/{n;s/border-radius: 0;/border-radius: 6px;/}' "$SWAYOSD_CSS"
+        sed -i 's/border-radius: 0;/border-radius: 12px;/' "$SWAYOSD_CSS"
+        changed=true
+    fi
+    if grep -q 'opacity: 0.97;' "$SWAYOSD_CSS"; then
+        sed -i 's/opacity: 0.97;/opacity: 0.85;/' "$SWAYOSD_CSS"
+        changed=true
+    fi
+    if $changed; then
+        RESTORED+=("SwayOSD")
+    fi
+fi
+
+# Ensure btop transparency
+BTOP_CONF="$HOME/.config/btop/btop.conf"
+if [ -f "$BTOP_CONF" ] && grep -q '^theme_background = True' "$BTOP_CONF"; then
+    sed -i 's/^theme_background = True/theme_background = False/' "$BTOP_CONF"
+    RESTORED+=("btop")
 fi
 
 # Restart services if anything was restored
