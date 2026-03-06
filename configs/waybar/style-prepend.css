@@ -12,6 +12,19 @@ tooltip {
   padding: 2px;
 }
 
+#workspaces button {
+  transition: background-color 300ms ease,
+              border 300ms ease,
+              text-shadow 300ms ease,
+              padding 200ms ease,
+              margin 200ms ease;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 2px 4px;
+  margin: 4px 1.5px;
+}
+
 #workspaces button.active {
   background-color: alpha(@foreground, 0.10);
   border-radius: 10px;

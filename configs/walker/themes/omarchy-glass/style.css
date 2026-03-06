@@ -61,6 +61,7 @@ child:selected .item-box * {
 
 .item-box {
   padding-left: 14px;
+  transition: background 200ms ease;
 }
 
 .item-text-box {
